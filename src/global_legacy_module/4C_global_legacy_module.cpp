@@ -45,6 +45,7 @@
 #include "4C_io_input_spec_builders.hpp"
 #include "4C_lubrication_ele.hpp"
 #include "4C_mat_aaaneohooke.hpp"
+#include "4C_mat_active_strain.hpp"
 #include "4C_mat_beam_elasthyper.hpp"
 #include "4C_mat_carreauyasuda.hpp"
 #include "4C_mat_cnst_1d_art.hpp"
@@ -220,6 +221,7 @@ namespace
       << Mat::FourierType::instance().name() << " "
       << Mat::MembraneElastHyperType::instance().name() << " "
       << Mat::MembraneActiveStrainType::instance().name() << " "
+      << Mat::ActiveStrainType::instance().name() << " "
       << Mat::GrowthRemodelElastHyperType::instance().name() << " "
       << Mat::MixtureType::instance().name() << " " << Mat::HerschelBulkleyType::instance().name()
       << " " << Mat::IonType::instance().name() << " "

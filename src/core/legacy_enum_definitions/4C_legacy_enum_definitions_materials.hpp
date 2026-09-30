@@ -96,6 +96,7 @@ namespace Core::Materials
                       ///< materials
     m_membrane_elasthyper,       ///< collection of hyperelastic materials for membranes
     m_membrane_activestrain,     ///< active strain membrane material for gastric electromechanics
+    m_activestrain,              ///< active strain 3D solid material for gastric electromechanics
     m_growthremodel_elasthyper,  ///< growth and remodeling
     m_herschelbulkley,           ///< fluid with nonlinear viscosity according to Herschel-Bulkley
     m_ion,                       ///< properties of an ion species in an electrolyte solution

@@ -1,0 +1,156 @@
+TITLE:
+  - "MAT_ActiveStrain: free active contraction of a unit cube (2x2x2 hex8) read from a VTU file"
+  - "The fiber directions are taken from the cell data fields fiber1 = (2,0,0) and fiber2 = (1,1,0) of"
+  - "the mesh via the material input fields FIBER1/FIBER2. The material normalizes fiber 1 and"
+  - "orthogonalizes fiber 2, which yields the x and y directions. The voltage is prescribed by a"
+  - "space-time function (SOURCE_ACTIVATION 1) and ramps up linearly in time."
+  - "The cube is supported by three symmetry planes and contracts stress-free, i.e. F = Fa. The"
+  - "displacements therefore match the analytical solution u = (Fa - I) X, see"
+  - "mat_active_strain_cube.4C.yaml."
+PROBLEM TYPE:
+  PROBLEMTYPE: "Structure"
+IO:
+  STRUCT_STRESS: "2PK"
+  VERBOSITY: "Standard"
+IO/RUNTIME VTK OUTPUT:
+  INTERVAL_STEPS: 1
+  OUTPUT_DATA_FORMAT: ascii
+IO/RUNTIME VTK OUTPUT/STRUCTURE:
+  OUTPUT_STRUCTURE: true
+  DISPLACEMENT: true
+  STRESS_STRAIN: true
+  GAUSS_POINT_DATA_OUTPUT_TYPE: element_center
+SOLVER 1:
+  SOLVER: "UMFPACK"
+  NAME: "Structure_Solver"
+STRUCTURAL DYNAMIC:
+  RESTARTEVERY: 1
+  DYNAMICTYPE: "Statics"
+  TIMESTEP: 0.2
+  NUMSTEP: 5
+  MAXTIME: 1
+  TOLDISP: 1e-11
+  TOLRES: 1e-11
+  LINEAR_SOLVER: 1
+MATERIALS:
+  - MAT: 1
+    MAT_ActiveStrain:
+      MATIDPASSIVE: 2
+      SCALIDVOLTAGE: 1
+      DENS: 1.0
+      BETA1: 1.2
+      BETA2: 2.3
+      VOLTHRESH: 0.2
+      ALPHA_FIBER1: 0.5
+      ALPHA_FIBER2: 0.25
+      SOURCE_ACTIVATION: 1
+      FIBER1:
+        from_mesh: fiber1
+      FIBER2:
+        from_mesh: fiber2
+  - MAT: 2
+    MAT_ElastHyper:
+      NUMMAT: 1
+      MATIDS: [10]
+      DENS: 1.0
+  - MAT: 10
+    ELAST_CoupNeoHooke:
+      YOUNG: 10
+      NUE: 0.3
+FUNCT1:
+  - COMPONENT: 0
+    SYMBOLIC_FUNCTION_OF_SPACE_TIME: "t"
+RESULT DESCRIPTION:
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 27
+      QUANTITY: "dispx"
+      VALUE: -0.25954987527159257
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 27
+      QUANTITY: "dispy"
+      VALUE: -0.12977493763579628
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 27
+      QUANTITY: "dispz"
+      VALUE: 0.55193169441992829
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 14
+      QUANTITY: "dispx"
+      VALUE: -0.12977493763579628
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 14
+      QUANTITY: "dispy"
+      VALUE: -0.064887468817898142
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 14
+      QUANTITY: "dispz"
+      VALUE: 0.27596584720996414
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 15
+      QUANTITY: "dispx"
+      VALUE: -0.25954987527159257
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 15
+      QUANTITY: "dispy"
+      VALUE: -0.064887468817898142
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 15
+      QUANTITY: "dispz"
+      VALUE: 0.27596584720996414
+      TOLERANCE: 1e-9
+DESIGN SURF DIRICH CONDITIONS:
+  - E: 1
+    ENTITY_TYPE: node_set_id
+    NUMDOF: 3
+    ONOFF: [1, 0, 0]
+    VAL: [0, 0, 0]
+    FUNCT: [0, 0, 0]
+  - E: 2
+    ENTITY_TYPE: node_set_id
+    NUMDOF: 3
+    ONOFF: [0, 1, 0]
+    VAL: [0, 0, 0]
+    FUNCT: [0, 0, 0]
+  - E: 3
+    ENTITY_TYPE: node_set_id
+    NUMDOF: 3
+    ONOFF: [0, 0, 1]
+    VAL: [0, 0, 0]
+    FUNCT: [0, 0, 0]
+STRUCTURE GEOMETRY:
+  FILE: vtu/mat_active_strain_cube.vtu
+  SHOW_INFO: "summary"
+  ELEMENT_BLOCKS:
+    - ID: 1
+      SOLID:
+        HEX8:
+          MAT: 1
+          KINEM: nonlinear
+fields:
+  - name: fiber1
+    discretization: "structure"
+    source:
+      from_mesh:
+        basis: "cells"
+  - name: fiber2
+    discretization: "structure"
+    source:
+      from_mesh:
+        basis: "cells"

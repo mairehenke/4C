@@ -14,6 +14,7 @@
 #include "4C_io_input_spec_validators.hpp"
 #include "4C_linalg_tensor_generators.hpp"
 #include "4C_linalg_utils_densematrix_funct.hpp"
+#include "4C_mat_active_strain.hpp"
 #include "4C_mat_electrode.hpp"
 #include "4C_mat_fiber_interpolation.hpp"
 #include "4C_mat_fluidporo_singlephase.hpp"
@@ -2626,6 +2627,64 @@ std::unordered_map<Core::Materials::MaterialType, Core::IO::InputSpec> Global::v
                 "ALPHA2", {.description = "intensity of contraction in fiber direction 2"}),
         },
         {.description = "active strain membrane material"});
+  }
+
+  /*----------------------------------------------------------------------*/
+  // active strain 3D solid material for gastric electromechanics
+  {
+    known_materials[Core::Materials::m_activestrain] = group("MAT_ActiveStrain",
+        {
+            parameter<int>("MATIDPASSIVE",
+                {.description = "MATID of the passive (elastic) 3D solid material"}),
+            parameter<int>("SCALIDVOLTAGE",
+                {.description = "position (1-based) of the (SMC) voltage in the coupled scalar "
+                                "field (only used for SOURCE_ACTIVATION 0)"}),
+            parameter<double>("DENS", {.description = "material mass density"}),
+            parameter<double>("BETA1", {.description = "Ca2+ dynamics"}),
+            parameter<double>("BETA2", {.description = "opening dynamics of the VDCC"}),
+            parameter<double>("VOLTHRESH", {.description = "voltage threshold for activation"}),
+            parameter<double>("ALPHA_FIBER1",
+                {.description = "intensity of the contraction along fiber 1 (AXI for the "
+                                "CIR-AXI-RAD nomenclature)"}),
+            parameter<double>("ALPHA_FIBER2",
+                {.description = "intensity of the contraction along fiber 2 (CIR for the "
+                                "CIR-AXI-RAD nomenclature); only used for orthotropic kinematics",
+                    .default_value = 0.0}),
+            parameter<int>("ALPHAFUNCT_FIBER1",
+                {.description = "id of a space-time function modulating the contraction intensity "
+                                "along fiber 1 (0 = constant)",
+                    .default_value = 0}),
+            parameter<int>("ALPHAFUNCT_FIBER2",
+                {.description =
+                        "id of a space-time function modulating the contraction intensity "
+                        "along fiber 2 (0 = constant); only used for orthotropic kinematics",
+                    .default_value = 0}),
+            parameter<int>("SOURCE_ACTIVATION",
+                {.description = "0 = voltage from the coupled scalar field (solid-scatra element); "
+                                ">0 = id of a space-time function prescribing the voltage (e.g. a "
+                                "traveling activation wave, no scalar transport needed)",
+                    .default_value = 0}),
+            parameter<Mat::PAR::ActiveStrain::ActiveStrainKinematics>("ACTIVE_STRAIN_TYPE",
+                {.description =
+                        "orthotropic: fibers 1 and 2 contract, the normal direction compensates "
+                        "the volume; transversely_isotropic: only fiber 1 contracts, the "
+                        "transverse plane expands isotropically",
+                    .default_value = Mat::PAR::ActiveStrain::ActiveStrainKinematics::orthotropic}),
+            interpolated_input_field<Core::LinAlg::Tensor<double, 3>, Mat::FiberInterpolation>(
+                "FIBER1",
+                {.description = "Optional fiber 1 direction field (constant, element-wise "
+                                "or nodal data, e.g. from the mesh). Overrides the fiber "
+                                "definition of the element.",
+                    .required = false}),
+            interpolated_input_field<Core::LinAlg::Tensor<double, 3>, Mat::FiberInterpolation>(
+                "FIBER2",
+                {.description = "Optional fiber 2 direction field (constant, element-wise "
+                                "or nodal data, e.g. from the mesh). Overrides the fiber "
+                                "definition of the element; requires FIBER1 and is only used for "
+                                "orthotropic kinematics.",
+                    .required = false}),
+        },
+        {.description = "active strain 3D solid material"});
   }
 
   /*----------------------------------------------------------------------*/

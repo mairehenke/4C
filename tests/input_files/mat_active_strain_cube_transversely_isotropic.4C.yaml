@@ -1,0 +1,194 @@
+TITLE:
+  - "MAT_ActiveStrain: free active contraction of a unit cube (2x2x2 hex8), transversely isotropic"
+  - "active strain kinematics (ACTIVE_STRAIN_TYPE transversely_isotropic) with a single fiber along x"
+  - "(FIBER1) defined on the elements. The voltage is prescribed by a space-time function"
+  - "(SOURCE_ACTIVATION 1) and ramps up linearly in time."
+  - "The cube is supported by three symmetry planes and contracts stress-free, i.e. F = Fa. The"
+  - "displacements therefore match the analytical solution u = (Fa - I) X with"
+  - "gamma = (1-exp(-BETA1 (V-VOLTHRESH))) (1-exp(-BETA2 (V-VOLTHRESH))), gamma1 = ALPHA_FIBER1 gamma,"
+  - "stretch 1-gamma1 along the fiber and (1-gamma1)^(-1/2) in both transverse directions."
+PROBLEM TYPE:
+  PROBLEMTYPE: "Structure"
+IO:
+  STRUCT_STRESS: "2PK"
+  VERBOSITY: "Standard"
+IO/RUNTIME VTK OUTPUT:
+  INTERVAL_STEPS: 1
+  OUTPUT_DATA_FORMAT: ascii
+IO/RUNTIME VTK OUTPUT/STRUCTURE:
+  OUTPUT_STRUCTURE: true
+  DISPLACEMENT: true
+  STRESS_STRAIN: true
+  GAUSS_POINT_DATA_OUTPUT_TYPE: element_center
+SOLVER 1:
+  SOLVER: "UMFPACK"
+  NAME: "Structure_Solver"
+STRUCTURAL DYNAMIC:
+  RESTARTEVERY: 1
+  DYNAMICTYPE: "Statics"
+  TIMESTEP: 0.2
+  NUMSTEP: 5
+  MAXTIME: 1
+  TOLDISP: 1e-11
+  TOLRES: 1e-11
+  LINEAR_SOLVER: 1
+MATERIALS:
+  - MAT: 1
+    MAT_ActiveStrain:
+      MATIDPASSIVE: 2
+      SCALIDVOLTAGE: 1
+      DENS: 1.0
+      BETA1: 1.2
+      BETA2: 2.3
+      VOLTHRESH: 0.2
+      ALPHA_FIBER1: 0.5
+      ACTIVE_STRAIN_TYPE: transversely_isotropic
+      SOURCE_ACTIVATION: 1
+  - MAT: 2
+    MAT_ElastHyper:
+      NUMMAT: 1
+      MATIDS: [10]
+      DENS: 1.0
+  - MAT: 10
+    ELAST_CoupNeoHooke:
+      YOUNG: 10
+      NUE: 0.3
+FUNCT1:
+  - COMPONENT: 0
+    SYMBOLIC_FUNCTION_OF_SPACE_TIME: "t"
+RESULT DESCRIPTION:
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 27
+      QUANTITY: "dispx"
+      VALUE: -0.25954987527159257
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 27
+      QUANTITY: "dispy"
+      VALUE: 0.16212299502314576
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 27
+      QUANTITY: "dispz"
+      VALUE: 0.16212299502314576
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 14
+      QUANTITY: "dispx"
+      VALUE: -0.12977493763579628
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 14
+      QUANTITY: "dispy"
+      VALUE: 0.081061497511572878
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 14
+      QUANTITY: "dispz"
+      VALUE: 0.081061497511572878
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 15
+      QUANTITY: "dispx"
+      VALUE: -0.25954987527159257
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 15
+      QUANTITY: "dispy"
+      VALUE: 0.081061497511572878
+      TOLERANCE: 1e-9
+  - STRUCTURE:
+      DIS: "structure"
+      NODE: 15
+      QUANTITY: "dispz"
+      VALUE: 0.081061497511572878
+      TOLERANCE: 1e-9
+DESIGN SURF DIRICH CONDITIONS:
+  - E: 1
+    NUMDOF: 3
+    ONOFF: [1, 0, 0]
+    VAL: [0, 0, 0]
+    FUNCT: [0, 0, 0]
+  - E: 2
+    NUMDOF: 3
+    ONOFF: [0, 1, 0]
+    VAL: [0, 0, 0]
+    FUNCT: [0, 0, 0]
+  - E: 3
+    NUMDOF: 3
+    ONOFF: [0, 0, 1]
+    VAL: [0, 0, 0]
+    FUNCT: [0, 0, 0]
+DSURF-NODE TOPOLOGY:
+  - "NODE 1 DSURFACE 1"
+  - "NODE 4 DSURFACE 1"
+  - "NODE 7 DSURFACE 1"
+  - "NODE 10 DSURFACE 1"
+  - "NODE 13 DSURFACE 1"
+  - "NODE 16 DSURFACE 1"
+  - "NODE 19 DSURFACE 1"
+  - "NODE 22 DSURFACE 1"
+  - "NODE 25 DSURFACE 1"
+  - "NODE 1 DSURFACE 2"
+  - "NODE 2 DSURFACE 2"
+  - "NODE 3 DSURFACE 2"
+  - "NODE 10 DSURFACE 2"
+  - "NODE 11 DSURFACE 2"
+  - "NODE 12 DSURFACE 2"
+  - "NODE 19 DSURFACE 2"
+  - "NODE 20 DSURFACE 2"
+  - "NODE 21 DSURFACE 2"
+  - "NODE 1 DSURFACE 3"
+  - "NODE 2 DSURFACE 3"
+  - "NODE 3 DSURFACE 3"
+  - "NODE 4 DSURFACE 3"
+  - "NODE 5 DSURFACE 3"
+  - "NODE 6 DSURFACE 3"
+  - "NODE 7 DSURFACE 3"
+  - "NODE 8 DSURFACE 3"
+  - "NODE 9 DSURFACE 3"
+NODE COORDS:
+  - "NODE 1 COORD 0.0 0.0 0.0"
+  - "NODE 2 COORD 0.5 0.0 0.0"
+  - "NODE 3 COORD 1.0 0.0 0.0"
+  - "NODE 4 COORD 0.0 0.5 0.0"
+  - "NODE 5 COORD 0.5 0.5 0.0"
+  - "NODE 6 COORD 1.0 0.5 0.0"
+  - "NODE 7 COORD 0.0 1.0 0.0"
+  - "NODE 8 COORD 0.5 1.0 0.0"
+  - "NODE 9 COORD 1.0 1.0 0.0"
+  - "NODE 10 COORD 0.0 0.0 0.5"
+  - "NODE 11 COORD 0.5 0.0 0.5"
+  - "NODE 12 COORD 1.0 0.0 0.5"
+  - "NODE 13 COORD 0.0 0.5 0.5"
+  - "NODE 14 COORD 0.5 0.5 0.5"
+  - "NODE 15 COORD 1.0 0.5 0.5"
+  - "NODE 16 COORD 0.0 1.0 0.5"
+  - "NODE 17 COORD 0.5 1.0 0.5"
+  - "NODE 18 COORD 1.0 1.0 0.5"
+  - "NODE 19 COORD 0.0 0.0 1.0"
+  - "NODE 20 COORD 0.5 0.0 1.0"
+  - "NODE 21 COORD 1.0 0.0 1.0"
+  - "NODE 22 COORD 0.0 0.5 1.0"
+  - "NODE 23 COORD 0.5 0.5 1.0"
+  - "NODE 24 COORD 1.0 0.5 1.0"
+  - "NODE 25 COORD 0.0 1.0 1.0"
+  - "NODE 26 COORD 0.5 1.0 1.0"
+  - "NODE 27 COORD 1.0 1.0 1.0"
+STRUCTURE ELEMENTS:
+  - "1 SOLID HEX8 1 2 5 4 10 11 14 13 MAT 1 KINEM nonlinear FIBER1 1 0 0"
+  - "2 SOLID HEX8 2 3 6 5 11 12 15 14 MAT 1 KINEM nonlinear FIBER1 1 0 0"
+  - "3 SOLID HEX8 4 5 8 7 13 14 17 16 MAT 1 KINEM nonlinear FIBER1 1 0 0"
+  - "4 SOLID HEX8 5 6 9 8 14 15 18 17 MAT 1 KINEM nonlinear FIBER1 1 0 0"
+  - "5 SOLID HEX8 10 11 14 13 19 20 23 22 MAT 1 KINEM nonlinear FIBER1 1 0 0"
+  - "6 SOLID HEX8 11 12 15 14 20 21 24 23 MAT 1 KINEM nonlinear FIBER1 1 0 0"
+  - "7 SOLID HEX8 13 14 17 16 22 23 26 25 MAT 1 KINEM nonlinear FIBER1 1 0 0"
+  - "8 SOLID HEX8 14 15 18 17 23 24 27 26 MAT 1 KINEM nonlinear FIBER1 1 0 0"
